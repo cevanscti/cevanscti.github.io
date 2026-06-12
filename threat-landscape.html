@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>cevanscti — US Critical Infrastructure Threat Landscape</title>
+<script>
+  if (sessionStorage.getItem('cti_auth') !== '1') {
+    window.location.href = 'index.html';
+  }
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #777;
+    --bg: #ffffff;
+    --bg-surface: #f7f7f5;
+    --bg-card: #ffffff;
+    --border: #e0ddd6;
+    --accent: #1a3a5c;
+    --accent-light: #e8f0f8;
+    --accent-mid: #2c5282;
+    --teal: #0f6e56;
+    --teal-light: #e1f5ee;
+    --amber: #854f0b;
+    --amber-light: #faeeda;
+    --coral: #993c1d;
+    --coral-light: #faece7;
+    --purple: #534ab7;
+    --purple-light: #eeedfe;
+    --red: #a32d2d;
+    --red-light: #fcebeb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f0ede8;
+      --text-secondary: #c0bdb8;
+      --text-muted: #888;
+      --bg: #141414;
+      --bg-surface: #1e1e1c;
+      --bg-card: #1e1e1c;
+      --border: #2e2e2c;
+      --accent: #4a8fcc;
+      --accent-light: #0c2035;
+      --accent-mid: #6aabdf;
+      --teal: #5dcaa5;
+      --teal-light: #04342c;
+      --amber: #ef9f27;
+      --amber-light: #412402;
+      --coral: #f0997b;
+      --coral-light: #4a1b0c;
+      --purple: #afa9ec;
+      --purple-light: #26215c;
+      --red: #f09595;
+      --red-light: #501313;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  a { color: var(--accent-mid); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border);
+    z-index: 100;
+    padding: 0 2rem;
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--text-primary); text-decoration: none; }
+  .nav-links a.active { color: var(--text-primary); font-weight: 500; }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  .hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .req-box {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0;
+  }
+  .req-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  .req-box p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 60px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .section-intro {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    max-width: 680px;
+  }
+
+  /* ACTOR CARDS */
+  .actor-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .actor-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .actor-name {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+  }
+  .actor-aliases {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .actor-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+  }
+  .badge-prc { background: var(--accent-light); border-color: var(--accent); color: var(--accent-mid); }
+  .badge-iran { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .badge-russia { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .badge-sector { background: var(--bg-surface); color: var(--text-secondary); }
+
+  /* DIAMOND MODEL */
+  .diamond-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .diamond-cell {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+  .diamond-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+  .diamond-cell p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* TTP TABLE */
+  .ttp-wrap {
+    margin-top: 1rem;
+  }
+  .ttp-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .ttp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .ttp-item {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    font-size: 0.85rem;
+  }
+  .ttp-id {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--accent-mid);
+    background: var(--accent-light);
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .ttp-desc {
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* TRENDS */
+  .trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .trend-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 0.5px solid var(--border);
+  }
+  .trend-card h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--text-primary);
+  }
+  .trend-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .trend-dir {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .trend-up { background: var(--red-light); border-color: var(--red); }
+  .trend-up .trend-dir { color: var(--red); }
+  .trend-mixed { background: var(--amber-light); border-color: var(--amber); }
+  .trend-mixed .trend-dir { color: var(--amber); }
+  .trend-stable { background: var(--accent-light); border-color: var(--accent); }
+  .trend-stable .trend-dir { color: var(--accent-mid); }
+
+  /* ASSESSMENT BOX */
+  .assessment-box {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .assessment-box h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+  }
+  .assessment-box p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+  .assessment-box p:last-child { margin-bottom: 0; }
+  .confidence {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--teal-light);
+    color: var(--teal);
+    border: 0.5px solid var(--teal);
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .meta-bar {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.6rem; }
+    .ttp-item { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">cevanscti &mdash; CTI Portfolio</span>
+    <ul class="nav-links">
+      <li><a href="index.html">Foundations</a></li>
+      <li><a href="threat-landscape.html" class="active">Threat Landscape</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="hero">
+    <p class="hero-eyebrow">Finished Intelligence Product</p>
+    <h1>US Critical Infrastructure<br>Threat Landscape</h1>
+    <p class="hero-sub">
+      A requirement-driven analysis of adversary activity targeting US critical infrastructure over the preceding 12-month period. Produced to demonstrate applied intelligence lifecycle methodology — from defined requirement through finished assessment.
+    </p>
+    <div class="req-box">
+      <p class="req-label">Intelligence Requirement</p>
+      <p>What is the current threat landscape facing US critical infrastructure, and which adversary actors present the highest risk to energy, water, telecommunications, and government sectors over the preceding 12-month period?</p>
+    </div>
+  </div>
+
+  <!-- ACTOR OVERVIEW -->
+  <section id="actors">
+    <p class="section-label">Priority Threat Actors</p>
+    <p class="section-intro">
+      Three nation-state actors and one Iran-affiliated hacktivist group represent the most active and consequential threats to US critical infrastructure in this assessment period. Each presents a distinct targeting philosophy, operational tempo, and risk profile.
+    </p>
+
+    <!-- VOLT TYPHOON -->
+    <div class="actor-card">
+      <div class="actor-header">
+        <div>
+          <p class="actor-name">Volt Typhoon</p>
+          <p class="actor-aliases">Also tracked as: Bronze Silhouette, Vanguard Panda, DEV-0391, Voltzite</p>
+        </div>
+        <div class="actor-badges">
+          <span class="badge badge-prc">PRC State-Sponsored</span>
+          <span class="badge badge-sector">Energy</span>
+          <span class="badge badge-sector">Comms</span>
+          <span class="badge badge-sector">Water</span>
+          <span class="badge badge-sector">Transportation</span>
+        </div>
+      </div>
+
+      <div class="diamond-grid">
+        <div class="diamond-cell">
+          <p class="diamond-label">Adversary</p>
+          <p>PRC state-sponsored. Assessed with high confidence to operate on behalf of the People's Liberation Army with strategic pre-positioning objectives, not immediate espionage.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Capability</p>
+          <p>Advanced LOTL (living-off-the-land) tradecraft. Leverages native OS tools to blend with normal administrator behavior, avoiding detection by signature-based controls. Demonstrated zero-day exploitation and custom botnet infrastructure (KV-Botnet, disrupted Jan 2024 — rebuilt).</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Infrastructure</p>
+          <p>Compromised SOHO routers used as relay nodes to obscure origin traffic. Rebuilt botnet infrastructure rapidly after January 2024 US government disruption, demonstrating high operational resilience.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Victim</p>
+          <p>US lifeline sector organizations — energy, water, communications, transportation — particularly in Guam and continental US. PRC-backed actors maintained access for months inside a public power utility in Littleton, MA.</p>
+        </div>
+      </div>
+
+      <div class="ttp-wrap">
+        <p class="ttp-label">MITRE ATT&CK — Selected TTPs</p>
+        <div class="ttp-list">
+          <div class="ttp-item">
+            <span class="ttp-id">T1078</span>
+            <span class="ttp-desc">Valid accounts — uses stolen or compromised legitimate credentials to blend with normal user activity and avoid triggering alerts</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1036</span>
+            <span class="ttp-desc">Masquerading — renames tools and processes to mimic legitimate system binaries, evading process-based detection logic</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1059.001</span>
+            <span class="ttp-desc">PowerShell — uses native PowerShell for reconnaissance, lateral movement, and data staging, leaving minimal forensic footprint</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1133</span>
+            <span class="ttp-desc">External remote services — gains initial access through internet-facing VPN and remote access services, often via unpatched vulnerabilities</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1571</span>
+            <span class="ttp-desc">Non-standard ports — routes C2 traffic over non-standard ports to evade perimeter inspection and network-based detection rules</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALT TYPHOON -->
+    <div class="actor-card">
+      <div class="actor-header">
+        <div>
+          <p class="actor-name">Salt Typhoon</p>
+          <p class="actor-aliases">Also tracked as: Earth Estries, GhostEmperor, FamousSparrow, UNC2286</p>
+        </div>
+        <div class="actor-badges">
+          <span class="badge badge-prc">PRC State-Sponsored</span>
+          <span class="badge badge-sector">Telecommunications</span>
+          <span class="badge badge-sector">Defense</span>
+          <span class="badge badge-sector">Government</span>
+        </div>
+      </div>
+
+      <div class="diamond-grid">
+        <div class="diamond-cell">
+          <p class="diamond-label">Adversary</p>
+          <p>PRC Ministry of State Security (MSS)-affiliated. Targeting pattern and intelligence collection focus align with Chinese strategic intelligence priorities — surveillance capability and pre-positioning against communications infrastructure.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Capability</p>
+          <p>Demonstrated long-dwell persistence — confirmed access to one telecom network maintained for three years before discovery. Exploited critical vulnerability in Cisco IOS XE. Accessed lawful intercept systems, call records, and subscriber metadata at multiple carriers.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Infrastructure</p>
+          <p>Compromised at least nine major US telecommunications carriers including AT&T, Verizon, T-Mobile, Lumen, and Charter Communications. By August 2025, FBI confirmed compromise of 200+ organizations across 80 countries.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Victim</p>
+          <p>Telecom providers, defense contractors, government agencies. A US state Army National Guard network was compromised via weakly configured remote access — yielding administrator credentials, network diagrams, and inter-state connectivity data.</p>
+        </div>
+      </div>
+
+      <div class="ttp-wrap">
+        <p class="ttp-label">MITRE ATT&CK — Selected TTPs</p>
+        <div class="ttp-list">
+          <div class="ttp-item">
+            <span class="ttp-id">T1190</span>
+            <span class="ttp-desc">Exploit public-facing application — exploited Cisco IOS XE vulnerability for initial access into telecommunications network infrastructure</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1098</span>
+            <span class="ttp-desc">Account manipulation — modified privileged accounts to maintain persistent access across environment after initial compromise</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1560</span>
+            <span class="ttp-desc">Archive collected data — staged and compressed collected call records and subscriber metadata prior to exfiltration</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1040</span>
+            <span class="ttp-desc">Network sniffing — intercepted network traffic to collect credentials and communications metadata at scale across carrier infrastructure</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1083</span>
+            <span class="ttp-desc">File and directory discovery — mapped victim network structure and identified high-value data repositories for targeted collection</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CYBERAV3NGERS / IRGC -->
+    <div class="actor-card">
+      <div class="actor-header">
+        <div>
+          <p class="actor-name">CyberAv3ngers / IRGC-affiliated APT</p>
+          <p class="actor-aliases">Also tracked as: Hydro Kitten, Storm-0784, UNC5691</p>
+        </div>
+        <div class="actor-badges">
+          <span class="badge badge-iran">Iran / IRGC</span>
+          <span class="badge badge-sector">Water / Wastewater</span>
+          <span class="badge badge-sector">Energy</span>
+          <span class="badge badge-sector">OT / ICS</span>
+        </div>
+      </div>
+
+      <div class="diamond-grid">
+        <div class="diamond-cell">
+          <p class="diamond-label">Adversary</p>
+          <p>Formally affiliated with Iran's Islamic Revolutionary Guard Corps. Operationally distinct from PRC actors — goal is disruption and public signaling, not silent persistence. Activity escalated sharply following US-Israel military actions against Iran in 2025-2026.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Capability</p>
+          <p>Specializes in OT/ICS targeting — PLCs, HMIs, and SCADA systems. Deployed custom malware (IOControl) in 2024 to remotely control water and fuel management systems. Nov 2023–Jan 2024 campaign compromised 75+ Unitronics PLC devices across water and wastewater infrastructure.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Infrastructure</p>
+          <p>Targets internet-exposed industrial control systems. Exploitation is often low-sophistication — default or absent credentials, publicly known vulnerabilities — but operationally impactful due to the nature of targeted systems. April 2026 joint advisory confirmed active Rockwell Automation CompactLogix and Micro850 PLC exploitation.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Victim</p>
+          <p>US water and wastewater facilities, energy utilities, government facilities. Confirmed victim: Municipal Water Authority of Aliquippa, Pennsylvania. US sanctioned six IRGC officials in February 2024 in response. Iranian-affiliated attacks spiked 133% in May–June 2025 following US-Israeli strikes.</p>
+        </div>
+      </div>
+
+      <div class="ttp-wrap">
+        <p class="ttp-label">MITRE ATT&CK — Selected TTPs</p>
+        <div class="ttp-list">
+          <div class="ttp-item">
+            <span class="ttp-id">T1078.001</span>
+            <span class="ttp-desc">Default accounts — exploits PLCs and HMIs with unchanged default credentials, a persistent configuration management failure across OT environments</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1565.002</span>
+            <span class="ttp-desc">Transmitted data manipulation — maliciously altered data displayed on HMI and SCADA screens to cause operational confusion and potential physical disruption</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1059</span>
+            <span class="ttp-desc">Command and scripting interpreter — used OT-specific diagnostic tools and scripting to interact with PLC project files and manipulate device configurations</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1498</span>
+            <span class="ttp-desc">Network denial of service — allied group NoName057(16) conducted coordinated DDoS operations against US infrastructure targets in parallel with OT intrusion campaigns</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1190</span>
+            <span class="ttp-desc">Exploit public-facing application — targeted internet-exposed industrial control systems, particularly Rockwell Automation Allen-Bradley PLCs accessible without VPN or firewall protection</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Z-PENTEST / RUSSIA -->
+    <div class="actor-card">
+      <div class="actor-header">
+        <div>
+          <p class="actor-name">Z-Pentest / GRU-affiliated Hacktivists</p>
+          <p class="actor-aliases">Allied with: CARR (People's Cyber Army of Russia), NoName057(16)</p>
+        </div>
+        <div class="actor-badges">
+          <span class="badge badge-russia">Russia / GRU</span>
+          <span class="badge badge-sector">OT / ICS</span>
+          <span class="badge badge-sector">Energy</span>
+          <span class="badge badge-sector">Government</span>
+        </div>
+      </div>
+
+      <div class="diamond-grid">
+        <div class="diamond-cell">
+          <p class="diamond-label">Adversary</p>
+          <p>Established September 2024. Assessed as GRU unit 74455 (Sandworm)-adjacent — GRU likely funded tooling used by allied CARR group. Z-Pentest combines OT intrusion capability with information operations, using claimed attacks to amplify pro-Russia messaging.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Capability</p>
+          <p>OT intrusion specialization with hack-and-leak and defacement operations. Notably avoids DDoS in favor of OT intrusions for greater media impact. Posted video evidence of HMI defacement operations in March and April 2025. Actively shared TTPs with allied hacktivist groups to scale operational reach.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Infrastructure</p>
+          <p>Operates via Telegram channels for command coordination and public attribution. Leverages NoName057(16) subscriber base for amplification. Tools funded through GRU unit 74455 through at least September 2024.</p>
+        </div>
+        <div class="diamond-cell">
+          <p class="diamond-label">Victim</p>
+          <p>Globally dispersed critical infrastructure — energy, water, and government facilities. US targets selected for geopolitical signaling value. Operations designed to generate media coverage and demonstrate capability rather than achieve silent persistent access.</p>
+        </div>
+      </div>
+
+      <div class="ttp-wrap">
+        <p class="ttp-label">MITRE ATT&CK — Selected TTPs</p>
+        <div class="ttp-list">
+          <div class="ttp-item">
+            <span class="ttp-id">T1491.002</span>
+            <span class="ttp-desc">External defacement — altered HMI display names and system identifiers to NoName057(16) and CARR references as proof-of-access messaging</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1499</span>
+            <span class="ttp-desc">Endpoint denial of service — coordinated with allied groups to conduct service disruption operations against infrastructure targets</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1566</span>
+            <span class="ttp-desc">Phishing — used alongside OT intrusion campaigns to gain initial access to IT networks before pivoting toward OT environments</span>
+          </div>
+          <div class="ttp-item">
+            <span class="ttp-id">T1485</span>
+            <span class="ttp-desc">Data destruction — claimed destructive operations against OT project files as part of hack-and-leak information operations</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDS -->
+  <section id="trends">
+    <p class="section-label">Trend Analysis</p>
+    <p class="section-intro">
+      Observed patterns across this assessment period indicate a threat environment that is increasing in both volume and operational sophistication, with three distinct trend lines warranting priority attention.
+    </p>
+    <div class="trend-grid">
+      <div class="trend-card trend-up">
+        <p class="trend-dir">&#8679; Increasing</p>
+        <h3>OT/ICS as a primary target surface</h3>
+        <p>All four actors in this assessment demonstrated active interest in operational technology environments. Iranian actors in particular have shifted from IT-side intrusions toward direct PLC and SCADA manipulation — a meaningful escalation in potential physical consequence.</p>
+      </div>
+      <div class="trend-card trend-up">
+        <p class="trend-dir">&#8679; Increasing</p>
+        <h3>Geopolitically-triggered attack surges</h3>
+        <p>Iranian-affiliated attacks spiked 133% following US-Israeli military actions in 2025. This pattern — where kinetic geopolitical events directly trigger cyber operation escalation — represents a persistent and predictable risk multiplier for critical infrastructure defenders.</p>
+      </div>
+      <div class="trend-card trend-up">
+        <p class="trend-dir">&#8679; Increasing</p>
+        <h3>Pre-positioning for disruption, not just espionage</h3>
+        <p>Volt Typhoon's assessed intent — maintaining dormant access for activation during a future crisis — represents a strategic shift from traditional cyber espionage toward infrastructure sabotage capability. 70% of cyberattacks in 2024–2025 targeted critical infrastructure sectors.</p>
+      </div>
+      <div class="trend-card trend-mixed">
+        <p class="trend-dir">~ Persistent</p>
+        <h3>Credential abuse and default configuration failures</h3>
+        <p>Across all actors, exploitation of default credentials, unpatched internet-facing systems, and weak remote access configurations remains the dominant initial access vector. This is not a novel finding — it is a persistent, systemic failure in asset hygiene across critical sectors.</p>
+      </div>
+      <div class="trend-card trend-mixed">
+        <p class="trend-dir">~ Persistent</p>
+        <h3>Long-dwell persistence as operational standard</h3>
+        <p>Salt Typhoon maintained access to one telecom network for three years. PRC actors maintained access inside a Massachusetts power utility for months before discovery. Detection timelines remain a critical gap — intrusion and discovery windows are measured in months, not days.</p>
+      </div>
+      <div class="trend-card trend-stable">
+        <p class="trend-dir">&#8677; Stable / Watch</p>
+        <h3>Hacktivist and nation-state convergence</h3>
+        <p>GRU-funded tooling flowing to hacktivist groups (CARR, Z-Pentest) blurs the attribution line between state operations and plausibly deniable proxy activity. This convergence complicates response decisions and creates attribution ambiguity that adversaries deliberately exploit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSESSMENT -->
+  <section id="assessment">
+    <p class="section-label">Analytical Assessment</p>
+    <div class="assessment-box">
+      <h3>Overall risk trajectory <span class="confidence">High Confidence</span></h3>
+      <p>The threat to US critical infrastructure is increasing across all measured dimensions — actor count, operational tempo, sector breadth, and potential physical consequence. The shift from espionage-dominant to disruption-capable operations by PRC actors, combined with Iran's demonstrated willingness to directly manipulate OT systems, represents a materially different risk environment than existed three years prior.</p>
+      <h3 style="margin-top:1rem;">Most significant near-term risk <span class="confidence">Moderate-High Confidence</span></h3>
+      <p>Iranian-affiliated actors present the highest near-term disruption risk, particularly as geopolitical tensions remain elevated. Their targeting of internet-exposed OT systems with low-sophistication but high-impact TTPs means that organizations with unpatched, internet-facing PLCs and default credentials remain at acute risk regardless of sector.</p>
+      <h3 style="margin-top:1rem;">Strategic assessment <span class="confidence">High Confidence</span></h3>
+      <p>PRC pre-positioning activity (Volt Typhoon, Salt Typhoon) represents the most significant long-term strategic risk. The combination of long-dwell persistence, LOTL tradecraft, and assessed intent to activate capabilities during a future crisis means that organizations may already be compromised without awareness. Detection investment — particularly anomalous lateral movement and LOTL behavior — should be prioritized over perimeter-focused controls.</p>
+    </div>
+  </section>
+
+  <p class="meta-bar">Assessment period: June 2025 — June 2026 &nbsp;&bull;&nbsp; Sources: CISA, FBI, NSA joint advisories; open-source threat intelligence reporting &nbsp;&bull;&nbsp; Produced by cevanscti</p>
+
+</div>
+</body>
+</html>
