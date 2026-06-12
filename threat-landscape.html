@@ -98,6 +98,7 @@
     display: flex;
     gap: 1.5rem;
     list-style: none;
+    align-items: center;
   }
   .nav-links a {
     font-size: 13px;
@@ -107,6 +108,21 @@
   }
   .nav-links a:hover { color: var(--text-primary); text-decoration: none; }
   .nav-links a.active { color: var(--text-primary); font-weight: 500; }
+  .nav-divider {
+    width: 0.5px;
+    height: 16px;
+    background: var(--border);
+    display: inline-block;
+    margin: 0 0.25rem;
+  }
+  .nav-links a.nav-external {
+    color: var(--teal);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-links a.nav-external:hover { color: var(--teal); opacity: 0.8; }
 
   .page { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
 
@@ -164,14 +180,37 @@
     scroll-margin-top: 60px;
   }
   .section-label {
-    font-size: 11px;
+    display: inline-block;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    padding: 4px 12px;
+    border-radius: 20px;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 0.5px solid var(--border);
+    background: var(--accent-light);
+    color: var(--accent-mid);
+    border: 0.5px solid var(--accent);
+  }
+  .section-label-teal {
+    background: var(--teal-light);
+    color: var(--teal);
+    border-color: var(--teal);
+  }
+  .section-label-purple {
+    background: var(--purple-light);
+    color: var(--purple);
+    border-color: var(--purple);
+  }
+  .section-label-amber {
+    background: var(--amber-light);
+    color: var(--amber);
+    border-color: var(--amber);
+  }
+  .section-label-coral {
+    background: var(--coral-light);
+    color: var(--coral);
+    border-color: var(--coral);
   }
   .section-intro {
     font-size: 0.95rem;
@@ -383,7 +422,8 @@
     <span class="nav-logo">cevanscti &mdash; CTI Portfolio</span>
     <ul class="nav-links">
       <li><a href="index.html">Foundations</a></li>
-      <li><a href="threat-landscape.html" class="active">Threat Landscape</a></li>
+      <li><span class="nav-divider"></span></li>
+      <li><a href="threat-landscape.html" class="nav-external active">Threat Landscape &#8599;</a></li>
     </ul>
   </div>
 </nav>
@@ -404,7 +444,7 @@
 
   <!-- ACTOR OVERVIEW -->
   <section id="actors">
-    <p class="section-label">Priority Threat Actors</p>
+    <p class="section-label section-label-coral">Priority Threat Actors</p>
     <p class="section-intro">
       Three nation-state actors and one Iran-affiliated hacktivist group represent the most active and consequential threats to US critical infrastructure in this assessment period. Each presents a distinct targeting philosophy, operational tempo, and risk profile.
     </p>
@@ -653,7 +693,7 @@
 
   <!-- TRENDS -->
   <section id="trends">
-    <p class="section-label">Trend Analysis</p>
+    <p class="section-label section-label-amber">Trend Analysis</p>
     <p class="section-intro">
       Observed patterns across this assessment period indicate a threat environment that is increasing in both volume and operational sophistication, with three distinct trend lines warranting priority attention.
     </p>
@@ -693,7 +733,7 @@
 
   <!-- ASSESSMENT -->
   <section id="assessment">
-    <p class="section-label">Analytical Assessment</p>
+    <p class="section-label section-label-teal">Analytical Assessment</p>
     <div class="assessment-box">
       <h3>Overall risk trajectory <span class="confidence">High Confidence</span></h3>
       <p>The threat to US critical infrastructure is increasing across all measured dimensions — actor count, operational tempo, sector breadth, and potential physical consequence. The shift from espionage-dominant to disruption-capable operations by PRC actors, combined with Iran's demonstrated willingness to directly manipulate OT systems, represents a materially different risk environment than existed three years prior.</p>
