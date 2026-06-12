@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cody Evans — CTI Portfolio</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: var(--bg, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 2rem;
+  }
+  #gate-box {
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  #gate-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #777;
+    margin-bottom: 0.75rem;
+  }
+  #gate-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+  }
+  #gate-sub {
+    font-size: 0.88rem;
+    color: #666;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+  #gate-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    border: 0.5px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+    margin-bottom: 0.75rem;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+  }
+  #gate-input:focus { border-color: #2c5282; }
+  #gate-input.error { border-color: #993c1d; background: #faece7; }
+  #gate-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: #1a3a5c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  #gate-btn:hover { background: #2c5282; }
+  #gate-error {
+    font-size: 0.82rem;
+    color: #993c1d;
+    margin-top: 0.6rem;
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    #gate { background: #141414; }
+    #gate-title { color: #f0ede8; }
+    #gate-sub { color: #888; }
+    #gate-input { background: #1e1e1c; border-color: #2e2e2c; color: #f0ede8; }
+    #gate-input.error { background: #4a1b0c; border-color: #f0997b; }
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #777;
+    --bg: #ffffff;
+    --bg-surface: #f7f7f5;
+    --bg-card: #ffffff;
+    --border: #e0ddd6;
+    --accent: #1a3a5c;
+    --accent-light: #e8f0f8;
+    --accent-mid: #2c5282;
+    --teal: #0f6e56;
+    --teal-light: #e1f5ee;
+    --amber: #854f0b;
+    --amber-light: #faeeda;
+    --coral: #993c1d;
+    --coral-light: #faece7;
+    --purple: #534ab7;
+    --purple-light: #eeedfe;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f0ede8;
+      --text-secondary: #c0bdb8;
+      --text-muted: #888;
+      --bg: #141414;
+      --bg-surface: #1e1e1c;
+      --bg-card: #1e1e1c;
+      --border: #2e2e2c;
+      --accent: #4a8fcc;
+      --accent-light: #0c2035;
+      --accent-mid: #6aabdf;
+      --teal: #5dcaa5;
+      --teal-light: #04342c;
+      --amber: #ef9f27;
+      --amber-light: #412402;
+      --coral: #f0997b;
+      --coral-light: #4a1b0c;
+      --purple: #afa9ec;
+      --purple-light: #26215c;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  a { color: var(--accent-mid); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border);
+    z-index: 100;
+    padding: 0 2rem;
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--text-primary); text-decoration: none; }
+
+  /* LAYOUT */
+  .page { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  .hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 580px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    color: var(--text-secondary);
+    background: var(--bg-surface);
+  }
+  .badge-accent {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent-mid);
+  }
+
+  /* SECTION */
+  section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 60px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .section-intro {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    max-width: 640px;
+  }
+
+  /* DEFINITION CARDS */
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .def-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .def-card-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .def-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+  .def-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .label-intel { color: var(--accent); }
+  .label-threat { color: var(--teal); }
+  .label-cti { color: var(--purple); }
+
+  /* LIFECYCLE */
+  .lifecycle-wrap {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.5rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .lifecycle-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+  .lifecycle-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    position: relative;
+  }
+  .lifecycle-step {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 0 0.5rem 1rem;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 0.5px solid var(--accent);
+    color: var(--accent-mid);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    z-index: 1;
+    position: relative;
+  }
+  .step-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .step-arrow {
+    position: absolute;
+    right: -8px;
+    top: 8px;
+    font-size: 16px;
+    color: var(--text-muted);
+    z-index: 2;
+  }
+  .lifecycle-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* THREE PILLARS */
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .pillar-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 0.5px solid var(--border);
+  }
+  .pillar-number {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .pillar-card h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--text-primary);
+  }
+  .pillar-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .pillar-1 { background: var(--accent-light); border-color: var(--accent); }
+  .pillar-1 .pillar-number { color: var(--accent-mid); }
+  .pillar-2 { background: var(--teal-light); border-color: var(--teal); }
+  .pillar-2 .pillar-number { color: var(--teal); }
+  .pillar-3 { background: var(--amber-light); border-color: var(--amber); }
+  .pillar-3 .pillar-number { color: var(--amber); }
+
+  /* PURPOSE FUNCTIONS */
+  .functions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .function-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .function-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    font-size: 18px;
+  }
+  .icon-preventive { background: var(--teal-light); color: var(--teal); }
+  .icon-response { background: var(--coral-light); color: var(--coral); }
+  .icon-strategic { background: var(--purple-light); color: var(--purple); }
+  .function-card h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text-primary);
+  }
+  .function-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* CREDENTIALS */
+  .creds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .cred-item {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .cred-item span {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* EXPERIENCE TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 1.25rem; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .timeline-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-top: 2px;
+    text-align: right;
+    padding-right: 1rem;
+    border-right: 0.5px solid var(--border);
+  }
+  .timeline-content h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .timeline-content .org {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .timeline-content p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* CONTACT */
+  .contact-bar {
+    background: var(--bg-surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .contact-bar p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .contact-bar a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--accent-mid);
+  }
+  .clearance-badge {
+    background: var(--accent-light);
+    border: 0.5px solid var(--accent);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent-mid);
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.6rem; }
+    .timeline-item { grid-template-columns: 1fr; }
+    .timeline-date { text-align: left; padding-right: 0; border-right: none; border-bottom: 0.5px solid var(--border); padding-bottom: 0.25rem; }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div id="gate-box">
+    <p id="gate-eyebrow">Restricted Access</p>
+    <h1 id="gate-title">CTI Portfolio</h1>
+    <p id="gate-sub">This portfolio is shared privately.<br>Enter the passphrase from the resume to continue.</p>
+    <input id="gate-input" type="password" placeholder="Passphrase" autocomplete="off" />
+    <button id="gate-btn" onclick="checkPass()">Enter</button>
+    <p id="gate-error">Incorrect passphrase. Please check your resume.</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    if (sessionStorage.getItem('cti_auth') === '1') {
+      document.addEventListener('DOMContentLoaded', function() {
+        var g = document.getElementById('gate');
+        if (g) g.style.display = 'none';
+      });
+    }
+  })();
+  function checkPass() {
+    var val = document.getElementById('gate-input').value.trim();
+    var inp = document.getElementById('gate-input');
+    var err = document.getElementById('gate-error');
+    if (val === 'Boxer2-Uncapped-Traps-Regalia-Factsheet') {
+      sessionStorage.setItem('cti_auth', '1');
+      document.getElementById('gate').style.display = 'none';
+      inp.classList.remove('error');
+      err.style.display = 'none';
+    } else {
+      inp.classList.add('error');
+      err.style.display = 'block';
+      inp.value = '';
+      inp.focus();
+    }
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPass();
+  });
+</script>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">Cody Evans &mdash; CTI Portfolio</span>
+    <ul class="nav-links">
+      <li><a href="#foundations">Foundations</a></li>
+      <li><a href="#lifecycle">Lifecycle</a></li>
+      <li><a href="#program">Program Requirements</a></li>
+      <li><a href="#experience">Experience</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">Cyber Threat Intelligence</p>
+    <h1>Turning adversary data into<br>defensive advantage</h1>
+    <p class="hero-sub">
+      A practitioner's perspective on threat intelligence — built from 10+ years executing the full intelligence lifecycle across U.S. Army cyber operations, national-level mission support, and enterprise security environments.
+    </p>
+    <div class="hero-meta">
+      <span class="badge badge-accent">Active TS/SCI Clearance</span>
+      <span class="badge">SANS FOR578 &mdash; Cyber Threat Intelligence</span>
+      <span class="badge">Recorded Future Certified Analyst</span>
+      <span class="badge">GIAC GOSI</span>
+      <span class="badge">CISSP</span>
+    </div>
+  </div>
+
+  <!-- FOUNDATIONS -->
+  <section id="foundations">
+    <p class="section-label">Foundations</p>
+    <p class="section-intro">
+      Precise definitions matter in intelligence work. Ambiguity in terminology leads to misaligned requirements, poor collection decisions, and finished products that don't serve their consumers. These are the working definitions that anchor this practice.
+    </p>
+    <div class="def-grid">
+      <div class="def-card">
+        <p class="def-card-label label-intel">Intelligence</p>
+        <h3>Processed information with purpose</h3>
+        <p>
+          The collection and processing of information about a competitive entity, needed by an organization to ensure its security and well-being. Intelligence is both a <em>product</em> and an encompassing process of methodologies — not raw data.
+        </p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-threat">Threat Intelligence</p>
+        <h3>Analytical rigor applied to adversary behavior</h3>
+        <p>
+          Processed information — refined through analytical rigor — about the hostile intent, capabilities, and opportunities of an adversarial entity, produced to satisfy a structured, defined requirement. Threat intelligence centers on the human threat actor.
+        </p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-cti">Why it matters</p>
+        <h3>The distinction drives everything downstream</h3>
+        <p>
+          Data becomes intelligence only when it has been refined, contextualized, and aligned to a requirement. A raw IOC is not intelligence. A finished product that tells a decision-maker what an adversary is likely to do next — and why — is.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTELLIGENCE LIFECYCLE -->
+  <section id="lifecycle">
+    <p class="section-label">Intelligence Lifecycle</p>
+    <p class="section-intro">
+      The intelligence lifecycle is a continuous, iterative process — not a linear checklist. Dissemination feeds back into planning, and gaps identified in analysis drive new collection requirements. Every phase depends on the quality of the one before it.
+    </p>
+    <div class="lifecycle-wrap">
+      <p class="lifecycle-title">The six-phase cycle</p>
+      <div class="lifecycle-steps">
+        <div class="lifecycle-step">
+          <div class="step-num">1</div>
+          <div class="step-label">Planning &amp;<br>Direction</div>
+          <div class="step-arrow">&#8250;</div>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">2</div>
+          <div class="step-label">Collection</div>
+          <div class="step-arrow">&#8250;</div>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">3</div>
+          <div class="step-label">Processing &amp;<br>Exploitation</div>
+          <div class="step-arrow">&#8250;</div>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">4</div>
+          <div class="step-label">Analysis &amp;<br>Production</div>
+          <div class="step-arrow">&#8250;</div>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">5</div>
+          <div class="step-label">Dissemination</div>
+          <div class="step-arrow">&#8250;</div>
+        </div>
+        <div class="lifecycle-step">
+          <div class="step-num">6</div>
+          <div class="step-label">Feedback &amp;<br>Re-direction</div>
+        </div>
+      </div>
+      <p class="lifecycle-note">&#8635; The cycle is continuous — dissemination generates feedback that re-enters planning and drives new requirements.</p>
+    </div>
+
+    <div class="def-grid">
+      <div class="def-card">
+        <p class="def-card-label label-intel">Planning &amp; Direction</p>
+        <p>Defines the intelligence requirements — the specific questions that must be answered. This phase sets the scope and purpose for everything that follows. Poor direction produces irrelevant intelligence regardless of collection quality.</p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-intel">Collection</p>
+        <p>Systematic gathering of raw data from OSINT, technical feeds, classified sources, human reporting, and partner sharing. Governed by a Collection Management Framework to ensure consistency and traceability.</p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-intel">Processing &amp; Exploitation</p>
+        <p>Raw data is normalized, deduplicated, enriched, and structured for analysis. This phase transforms volume into something an analyst can actually work with — without it, analysts drown in noise.</p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-intel">Analysis &amp; Production</p>
+        <p>The intellectual core of the cycle. Analysts apply tradecraft — structured analytical techniques, adversary modeling, TTP mapping — to produce finished intelligence that answers the stated requirement with confidence levels attached.</p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-intel">Dissemination</p>
+        <p>Finished intelligence is delivered to the right consumer, in the right format, at the right time. A technically flawless product delivered late or to the wrong audience has no operational value.</p>
+      </div>
+      <div class="def-card">
+        <p class="def-card-label label-intel">Feedback &amp; Re-direction</p>
+        <p>Consumers evaluate the product's relevance and accuracy. That feedback closes the loop — identifying collection gaps, refining requirements, and improving the next cycle. Intelligence without feedback doesn't improve.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM REQUIREMENTS -->
+  <section id="program">
+    <p class="section-label">Program Requirements</p>
+    <p class="section-intro">
+      A functional threat intelligence program requires three foundational elements before any collection or analysis begins. These are not optional enhancements — they are the minimum viable structure for intelligence work that is reproducible, defensible, and operationally useful.
+    </p>
+    <div class="pillars-grid">
+      <div class="pillar-card pillar-1">
+        <div class="pillar-number">01</div>
+        <h3>Intelligence Requirements</h3>
+        <p>What priority question or task needs to be answered? Without defined requirements, collection is unfocused and analysis produces outputs that no one asked for. Requirements are set by stakeholders and refined through the feedback loop.</p>
+      </div>
+      <div class="pillar-card pillar-2">
+        <div class="pillar-number">02</div>
+        <h3>Threat Model</h3>
+        <p>What framework guides the internal process? A defined threat model reduces process conflicts, aligns team expectations, and grounds analysis in consistent methodology. Without it, every analyst is working from a different mental map.</p>
+      </div>
+      <div class="pillar-card pillar-3">
+        <div class="pillar-number">03</div>
+        <h3>Collection Management Framework</h3>
+        <p>How is information gathered, stored, and utilized throughout the entire process? A CMF governs source selection, data handling, storage, and access — ensuring that collection decisions are deliberate, documented, and auditable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PURPOSE / FUNCTIONS -->
+  <section id="functions">
+    <p class="section-label">Operational Functions</p>
+    <p class="section-intro">
+      Threat intelligence serves three distinct organizational functions. A mature program contributes to all three simultaneously — not as separate workstreams, but as integrated outputs of the same analytical effort.
+    </p>
+    <div class="functions-grid">
+      <div class="function-card">
+        <div class="function-icon icon-preventive">&#9673;</div>
+        <h3>Preventive</h3>
+        <p>SOC alignment through detection support, alerting, and triage enrichment. Intelligence enables defenders to prioritize the right signals and reduce time-to-detect against known adversary patterns.</p>
+      </div>
+      <div class="function-card">
+        <div class="function-icon icon-response">&#9650;</div>
+        <h3>Response</h3>
+        <p>IR/IH support through IOC and artifact enrichment. During an active incident, intelligence accelerates attribution, scoping, and containment decisions by providing context that raw telemetry cannot.</p>
+      </div>
+      <div class="function-card">
+        <div class="function-icon icon-strategic">&#9670;</div>
+        <h3>Strategic</h3>
+        <p>Business decision support and resource prioritization input. At the strategic level, threat intelligence informs where an organization invests defensively — translating adversary behavior into risk language executives can act on.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="section-label">Practitioner Experience</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2019 &ndash; 2020</div>
+        <div class="timeline-content">
+          <h3>Senior CTI Analyst &mdash; ARCYBER / U.S. Cyber Command</h3>
+          <p class="org">U.S. Army / Fort Meade, MD</p>
+          <p>Executed full intelligence lifecycle operations supporting cyber mission teams. Conducted advanced OSINT research and APT campaign tracking focused on nation-state activity, infrastructure mapping, and victimology. Produced operational and strategic intelligence reporting for senior commanders and mission planners. Mapped adversary TTPs to detection gaps and mitigation strategies.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2009 &ndash; Present</div>
+        <div class="timeline-content">
+          <h3>Cyber Operations Specialist / Threat Intelligence Analyst</h3>
+          <p class="org">U.S. Army National Guard</p>
+          <p>Tracked APT campaigns and adversary infrastructure across the full intelligence lifecycle. Conducted advanced OSINT investigations and produced finished intelligence informing defensive operations and hunt missions. Delivered intelligence briefings to technical and senior non-technical stakeholders. Mentored junior analysts in tradecraft within high-tempo operational environments.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2022 &ndash; 2025</div>
+        <div class="timeline-content">
+          <h3>Information Security Engineer &mdash; Threat &amp; Vulnerability Management</h3>
+          <p class="org">Huntington National Bank</p>
+          <p>Integrated threat intelligence into enterprise vulnerability management using Cisco VM (Kenna) and ServiceNow to prioritize remediation by exploitability and threat actor activity. Conducted identity threat research across Microsoft 365 and Entra ID. Queried large-scale telemetry via ELK / Sumo Logic. Automated analysis workflows in Python. Increased authenticated scanning coverage by 40%+.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2021 &ndash; 2022</div>
+        <div class="timeline-content">
+          <h3>IT Security Analyst II &mdash; Security Operations</h3>
+          <p class="org">Western Governors University</p>
+          <p>SIEM-based monitoring, event correlation, and log analysis across enterprise and cloud environments. Investigated phishing, malware, and anomalous behavioral indicators with threat intelligence enrichment. Improved detection fidelity through false positive/negative analysis and monitoring logic refinement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS -->
+  <section id="credentials">
+    <p class="section-label">Certifications &amp; Training</p>
+    <div class="creds-grid">
+      <div class="cred-item">CISSP<span>Certified Information Systems Security Professional</span></div>
+      <div class="cred-item">SANS FOR578<span>Cyber Threat Intelligence</span></div>
+      <div class="cred-item">GIAC GOSI<span>Open Source Intelligence</span></div>
+      <div class="cred-item">Recorded Future Certified Analyst<span>Threat Intelligence Platform</span></div>
+      <div class="cred-item">SANS SEC595<span>Applied Data Science &amp; AI/ML for Cybersecurity</span></div>
+      <div class="cred-item">SANS SEC504<span>Hacker Tools, Techniques &amp; Incident Handling</span></div>
+      <div class="cred-item">SANS SEC488<span>Cloud Security Essentials</span></div>
+      <div class="cred-item">CompTIA CySA+<span>Cybersecurity Analyst</span></div>
+      <div class="cred-item">C|CISO<span>Certified Chief Information Security Officer</span></div>
+      <div class="cred-item">SSCP<span>Systems Security Certified Practitioner</span></div>
+      <div class="cred-item">CEH<span>Certified Ethical Hacker</span></div>
+      <div class="cred-item">B.S. Cybersecurity &amp; Information Assurance<span>Western Governors University, 2025</span></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div class="contact-bar">
+    <div>
+      <p style="font-weight:500; margin-bottom:3px;">Cody Evans &mdash; Open to remote CTI roles</p>
+      <a href="mailto:evanscody137@gmail.com">evanscody137@gmail.com</a>
+      <span style="color:var(--text-muted); font-size:0.85rem;"> &nbsp;&bull;&nbsp; Salt Lake City, UT</span>
+    </div>
+    <span class="clearance-badge">Active TS/SCI Clearance</span>
+  </div>
+
+</div>
+</body>
+</html>
